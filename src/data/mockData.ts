@@ -6,11 +6,11 @@ const today = dayjs();
 export const initialData: AppState = {
   currentUser: {
     id: "u1",
-    name: "Quản Trị Viên",
-    email: "admin@clinic.com",
+    name: "Dương Minh Trí",
+    email: "duongminhtri@ypct.edu.vn",
   },
   users: [
-    { id: "u1", name: "Quản Trị Viên", email: "admin@clinic.com" },
+    { id: "u1", name: "Dương Minh Trí", email: "duongminhtri@ypct.edu.vn" },
   ],
   categories: [
     { id: "c1", name: "Thuốc kháng sinh", description: "Các loại thuốc kháng sinh" },

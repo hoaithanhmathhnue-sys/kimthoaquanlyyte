@@ -1,6 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-import { LayoutDashboard, Package, ArrowRightLeft, Users, FileText, Settings, X, Activity } from "lucide-react";
+import { LayoutDashboard, Package, ArrowRightLeft, Users, FileText, Settings, X, Activity, UserCircle } from "lucide-react";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 
@@ -15,6 +15,7 @@ const navItems = [
   { icon: ArrowRightLeft, label: "Giao dịch", path: "/transactions" },
   { icon: Users, label: "Nhà cung cấp", path: "/suppliers" },
   { icon: FileText, label: "Báo cáo", path: "/reports" },
+  { icon: UserCircle, label: "Tác giả", path: "/author" },
   { icon: Settings, label: "Cài đặt", path: "/settings" },
 ];
 

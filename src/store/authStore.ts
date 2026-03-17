@@ -2,14 +2,14 @@ import { create } from 'zustand';
 import { User } from '../types';
 
 const ADMIN_ACCOUNT = {
-  email: 'admin@clinic.com',
-  password: '123456',
+  username: 'Dương Minh Trí',
+  password: '12345',
 };
 
 const ADMIN_USER: User = {
   id: 'u1',
-  name: 'Quản Trị Viên',
-  email: 'admin@clinic.com',
+  name: 'Dương Minh Trí',
+  email: 'duongminhtri@ypct.edu.vn',
 };
 
 const AUTH_STORAGE_KEY = 'auth_user';
@@ -20,7 +20,7 @@ interface AuthState {
   user: User | null;
   profile: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ error?: string }>;
+  signIn: (username: string, password: string) => Promise<{ error?: string }>;
   signOut: () => void;
   initAuth: () => void;
 }
@@ -45,12 +45,12 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
   },
 
-  signIn: async (email: string, password: string) => {
+  signIn: async (username: string, password: string) => {
     if (
-      email.toLowerCase() !== ADMIN_ACCOUNT.email ||
+      username.trim() !== ADMIN_ACCOUNT.username ||
       password !== ADMIN_ACCOUNT.password
     ) {
-      return { error: 'Email hoặc mật khẩu không đúng.' };
+      return { error: 'Tên đăng nhập hoặc mật khẩu không đúng.' };
     }
 
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(ADMIN_USER));

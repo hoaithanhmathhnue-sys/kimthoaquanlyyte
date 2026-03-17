@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/authStore';
 import { Activity, Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -16,7 +16,7 @@ export const Login: React.FC = () => {
     setError(null);
     setLoading(true);
     try {
-      const result = await signIn(email, password);
+      const result = await signIn(username, password);
       if (result.error) {
         setError(result.error);
       } else {
@@ -49,23 +49,23 @@ export const Login: React.FC = () => {
         <div className="bg-white py-8 px-4 shadow-xl sm:rounded-2xl sm:px-10 border border-gray-100">
           <form className="space-y-6" onSubmit={handleLogin}>
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                Tên đăng nhập
               </label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  autoComplete="email"
+                  id="username"
+                  name="username"
+                  type="text"
+                  autoComplete="username"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border"
-                  placeholder="admin@clinic.com"
+                  placeholder="Dương Minh Trí"
                 />
               </div>
             </div>
@@ -133,7 +133,7 @@ export const Login: React.FC = () => {
           </form>
 
           <div className="mt-4 text-center text-xs text-gray-500">
-            <p>Tài khoản: admin@clinic.com / 123456</p>
+            <p>Tài khoản: Dương Minh Trí / 12345</p>
           </div>
         </div>
       </div>

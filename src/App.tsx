@@ -15,6 +15,7 @@ import { Reports } from "./pages/Reports";
 import { Settings } from "./pages/Settings";
 import { AIAssistant } from "./pages/AIAssistant";
 import { Login } from "./pages/Login";
+import { Author } from "./pages/Author";
 import { useAuthStore } from "./store/authStore";
 
 export default function App() {
@@ -59,6 +60,7 @@ export default function App() {
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/suppliers" element={<Suppliers />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/author" element={<Author />} />
 
             <Route path="/settings" element={<Settings />} />
             <Route path="/ai-assistant" element={<AIAssistant />} />
