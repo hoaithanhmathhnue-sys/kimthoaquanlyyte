@@ -65,7 +65,7 @@ export const Login: React.FC = () => {
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   className="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md py-2 px-3 border"
-                  placeholder="Dương Minh Trí"
+                  placeholder="Nhập tên đăng nhập"
                 />
               </div>
             </div>
