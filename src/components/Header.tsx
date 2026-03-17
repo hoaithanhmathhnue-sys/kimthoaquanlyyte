@@ -48,14 +48,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500 ring-2 ring-white"></span>
           <span className="sr-only">Notifications</span>
         </Button>
-        <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
-          <div className="flex flex-col items-end">
-            <span className="text-sm font-medium text-slate-900">{profile?.name || 'Loading...'}</span>
-            <span className="text-xs text-slate-500">Quản trị viên</span>
-          </div>
-          <div className="h-9 w-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold border border-emerald-200">
-            {profile?.name?.charAt(0) || '?'}
-          </div>
+        <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
           <Button variant="ghost" size="icon" className="text-red-500 hover:bg-red-50" onClick={handleSignOut}>
             <LogOut className="h-5 w-5" />
           </Button>
