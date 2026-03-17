@@ -18,7 +18,7 @@ import { Login } from "./pages/Login";
 import { useAuthStore } from "./store/authStore";
 
 export default function App() {
-  const { user, profile, loading, initAuth } = useAuthStore();
+  const { user, loading, initAuth } = useAuthStore();
 
   useEffect(() => {
     initAuth();
@@ -49,9 +49,6 @@ export default function App() {
     );
   }
 
-  const role = profile?.role;
-  const isAdminOrStorekeeper = role === 'admin' || role === 'storekeeper';
-
   return (
     <AppProvider>
       <BrowserRouter>
@@ -60,14 +57,8 @@ export default function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/inventory" element={<Inventory />} />
             <Route path="/transactions" element={<Transactions />} />
-            
-            {/* Admin and Storekeeper only routes */}
-            {isAdminOrStorekeeper && (
-              <>
-                <Route path="/suppliers" element={<Suppliers />} />
-                <Route path="/reports" element={<Reports />} />
-              </>
-            )}
+            <Route path="/suppliers" element={<Suppliers />} />
+            <Route path="/reports" element={<Reports />} />
 
             <Route path="/settings" element={<Settings />} />
             <Route path="/ai-assistant" element={<AIAssistant />} />

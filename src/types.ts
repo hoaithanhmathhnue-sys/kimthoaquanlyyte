@@ -1,9 +1,6 @@
-export type Role = 'admin' | 'storekeeper' | 'medical_staff';
-
 export interface User {
   id: string;
   name: string;
-  role: Role;
   email: string;
 }
 

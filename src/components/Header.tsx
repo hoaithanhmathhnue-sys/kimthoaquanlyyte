@@ -51,7 +51,7 @@ export function Header({ onMenuClick }: HeaderProps) {
         <div className="flex items-center gap-3 pl-2 border-l border-slate-200">
           <div className="flex flex-col items-end">
             <span className="text-sm font-medium text-slate-900">{profile?.name || 'Loading...'}</span>
-            <span className="text-xs text-slate-500 capitalize">{profile?.role?.replace('_', ' ')}</span>
+            <span className="text-xs text-slate-500">Quản trị viên</span>
           </div>
           <div className="h-9 w-9 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold border border-emerald-200">
             {profile?.name?.charAt(0) || '?'}

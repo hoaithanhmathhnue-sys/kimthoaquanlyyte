@@ -10,10 +10,12 @@ import { formatDate, generateId } from "../lib/utils";
 import dayjs from "dayjs";
 
 export function Inventory() {
-  const { medicines, categories, batches, addMedicine, deleteMedicine } = useApp();
+  const { medicines, categories, batches, addMedicine, updateMedicine, deleteMedicine } = useApp();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingMedicine, setEditingMedicine] = useState<{ id: string; name: string; categoryId: string; unit: string; minStock: number } | null>(null);
   const [newMedicine, setNewMedicine] = useState({ name: "", categoryId: "", unit: "", minStock: 0 });
 
   const inventoryData = useMemo(() => {
@@ -22,7 +24,6 @@ export function Inventory() {
       const totalQuantity = medicineBatches.reduce((sum, b) => sum + b.quantity, 0);
       const category = categories.find((c) => c.id === medicine.categoryId);
       
-      // Check for expiring batches
       const hasExpiring = medicineBatches.some(b => {
         const daysToExpiry = dayjs(b.expiryDate).diff(dayjs(), "day");
         return daysToExpiry > 0 && daysToExpiry <= 90;
@@ -58,6 +59,30 @@ export function Inventory() {
     
     setIsAddModalOpen(false);
     setNewMedicine({ name: "", categoryId: "", unit: "", minStock: 0 });
+  };
+
+  const handleEdit = (item: typeof inventoryData[0]) => {
+    setEditingMedicine({
+      id: item.id,
+      name: item.name,
+      categoryId: item.categoryId,
+      unit: item.unit,
+      minStock: item.minStock,
+    });
+    setIsEditModalOpen(true);
+  };
+
+  const handleSaveEdit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingMedicine) return;
+    updateMedicine(editingMedicine.id, {
+      name: editingMedicine.name,
+      categoryId: editingMedicine.categoryId,
+      unit: editingMedicine.unit,
+      minStock: editingMedicine.minStock,
+    });
+    setIsEditModalOpen(false);
+    setEditingMedicine(null);
   };
 
   const handleDelete = (id: string) => {
@@ -148,7 +173,7 @@ export function Inventory() {
                       </span>
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50">
+                      <Button variant="ghost" size="icon" className="h-8 w-8 text-blue-600 hover:text-blue-700 hover:bg-blue-50" onClick={() => handleEdit(item)}>
                         <Edit className="h-4 w-4" />
                       </Button>
                       <Button variant="ghost" size="icon" className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-50" onClick={() => handleDelete(item.id)}>
@@ -163,6 +188,7 @@ export function Inventory() {
         </CardContent>
       </Card>
 
+      {/* Modal Thêm mới */}
       <Modal isOpen={isAddModalOpen} onClose={() => setIsAddModalOpen(false)} title="Thêm Thuốc/Vật tư mới">
         <form onSubmit={handleAddMedicine} className="space-y-4">
           <div className="space-y-2">
@@ -212,6 +238,58 @@ export function Inventory() {
             <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">Lưu lại</Button>
           </div>
         </form>
+      </Modal>
+
+      {/* Modal Sửa */}
+      <Modal isOpen={isEditModalOpen} onClose={() => { setIsEditModalOpen(false); setEditingMedicine(null); }} title="Chỉnh sửa Thuốc/Vật tư">
+        {editingMedicine && (
+          <form onSubmit={handleSaveEdit} className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Tên thuốc/vật tư</label>
+              <Input 
+                required 
+                value={editingMedicine.name} 
+                onChange={e => setEditingMedicine({...editingMedicine, name: e.target.value})} 
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-slate-700">Danh mục</label>
+              <select 
+                required
+                className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                value={editingMedicine.categoryId}
+                onChange={e => setEditingMedicine({...editingMedicine, categoryId: e.target.value})}
+              >
+                <option value="" disabled>Chọn danh mục</option>
+                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+              </select>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Đơn vị tính</label>
+                <Input 
+                  required 
+                  value={editingMedicine.unit} 
+                  onChange={e => setEditingMedicine({...editingMedicine, unit: e.target.value})} 
+                />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-slate-700">Tồn kho tối thiểu</label>
+                <Input 
+                  type="number" 
+                  required 
+                  min="0"
+                  value={editingMedicine.minStock} 
+                  onChange={e => setEditingMedicine({...editingMedicine, minStock: Number(e.target.value)})} 
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 pt-4">
+              <Button type="button" variant="outline" onClick={() => { setIsEditModalOpen(false); setEditingMedicine(null); }}>Hủy</Button>
+              <Button type="submit" className="bg-emerald-600 hover:bg-emerald-700 text-white">Cập nhật</Button>
+            </div>
+          </form>
+        )}
       </Modal>
     </div>
   );

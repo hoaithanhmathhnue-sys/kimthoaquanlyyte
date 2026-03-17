@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-import { Activity, Mail, Lock, LogIn, AlertCircle, UserCheck } from 'lucide-react';
-
-const QUICK_LOGINS = [
-  { label: 'Admin', email: 'admin@clinic.com', password: '123456', color: 'bg-blue-600 hover:bg-blue-700' },
-  { label: 'Thủ kho', email: 'thukho@clinic.com', password: '123456', color: 'bg-emerald-600 hover:bg-emerald-700' },
-  { label: 'Nhân viên y tế', email: 'yta@clinic.com', password: '123456', color: 'bg-amber-600 hover:bg-amber-700' },
-];
+import { Activity, Mail, Lock, LogIn, AlertCircle } from 'lucide-react';
 
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -19,14 +13,10 @@ export const Login: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    await doLogin(email, password);
-  };
-
-  const doLogin = async (loginEmail: string, loginPassword: string) => {
     setError(null);
     setLoading(true);
     try {
-      const result = await signIn(loginEmail, loginPassword);
+      const result = await signIn(email, password);
       if (result.error) {
         setError(result.error);
       } else {
@@ -142,33 +132,8 @@ export const Login: React.FC = () => {
             </div>
           </form>
 
-          <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Đăng nhập nhanh</span>
-              </div>
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {QUICK_LOGINS.map((ql) => (
-                <button
-                  key={ql.email}
-                  type="button"
-                  disabled={loading}
-                  onClick={() => doLogin(ql.email, ql.password)}
-                  className={`flex items-center justify-center gap-1 py-2 px-3 rounded-md text-xs font-medium text-white transition-colors ${ql.color} ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-                >
-                  <UserCheck className="w-3.5 h-3.5" />
-                  {ql.label}
-                </button>
-              ))}
-            </div>
-          </div>
-
           <div className="mt-4 text-center text-xs text-gray-500">
-            <p>Mật khẩu mặc định: 123456</p>
+            <p>Tài khoản: admin@clinic.com / 123456</p>
           </div>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { AppState, Role } from "../types";
+import { AppState } from "../types";
 import dayjs from "dayjs";
 
 const today = dayjs();
@@ -7,13 +7,10 @@ export const initialData: AppState = {
   currentUser: {
     id: "u1",
     name: "Quản Trị Viên",
-    role: "admin",
     email: "admin@clinic.com",
   },
   users: [
-    { id: "u1", name: "Quản Trị Viên", role: "admin", email: "admin@clinic.com" },
-    { id: "u2", name: "Nguyễn Văn A", role: "storekeeper", email: "thukho@clinic.com" },
-    { id: "u3", name: "Trần Thị B", role: "medical_staff", email: "yta@clinic.com" },
+    { id: "u1", name: "Quản Trị Viên", email: "admin@clinic.com" },
   ],
   categories: [
     { id: "c1", name: "Thuốc kháng sinh", description: "Các loại thuốc kháng sinh" },

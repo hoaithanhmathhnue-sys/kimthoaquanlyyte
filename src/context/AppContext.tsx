@@ -10,6 +10,9 @@ interface AppContextType extends AppState {
   updateBatch: (id: string, batch: Partial<Batch>) => void;
   deleteBatch: (id: string) => void;
   addTransaction: (transaction: Transaction) => void;
+  addSupplier: (supplier: Supplier) => void;
+  updateSupplier: (id: string, updates: Partial<Supplier>) => void;
+  deleteSupplier: (id: string) => void;
   resetData: () => void;
 }
 
@@ -93,6 +96,24 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
+  const addSupplier = (supplier: Supplier) => {
+    setState((prev) => ({ ...prev, suppliers: [...prev.suppliers, supplier] }));
+  };
+
+  const updateSupplier = (id: string, updates: Partial<Supplier>) => {
+    setState((prev) => ({
+      ...prev,
+      suppliers: prev.suppliers.map((s) => (s.id === id ? { ...s, ...updates } : s)),
+    }));
+  };
+
+  const deleteSupplier = (id: string) => {
+    setState((prev) => ({
+      ...prev,
+      suppliers: prev.suppliers.filter((s) => s.id !== id),
+    }));
+  };
+
   const resetData = () => {
     setState(initialData);
   };
@@ -108,6 +129,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         updateBatch,
         deleteBatch,
         addTransaction,
+        addSupplier,
+        updateSupplier,
+        deleteSupplier,
         resetData,
       }}
     >

@@ -1,7 +1,6 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { LayoutDashboard, Package, ArrowRightLeft, Users, FileText, Settings, X, Activity } from "lucide-react";
-import { useAuthStore } from "../store/authStore";
 import { cn } from "../lib/utils";
 import { Button } from "./ui/Button";
 
@@ -20,7 +19,6 @@ const navItems = [
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
-  const { profile } = useAuthStore();
 
   return (
     <>
@@ -48,12 +46,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         </div>
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           {navItems.map((item) => {
-            // Role-based visibility logic
-            if ((item.path === "/suppliers" || item.path === "/reports") && 
-                profile?.role !== "admin" && profile?.role !== "storekeeper") {
-              return null;
-            }
-
             return (
               <NavLink
                 key={item.path}

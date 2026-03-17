@@ -1,17 +1,142 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useApp } from "../context/AppContext";
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/Card";
+import { Card, CardContent } from "../components/ui/Card";
 import { Button } from "../components/ui/Button";
 import { Input } from "../components/ui/Input";
-import { Bot, User, Send, Loader2, Sparkles, AlertCircle } from "lucide-react";
+import { Bot, User, Send, Loader2, Sparkles } from "lucide-react";
 import { analyzeInventoryWithAI } from "../services/ai";
-import ReactMarkdown from "react-markdown";
 
 interface Message {
   id: string;
   role: "user" | "ai";
   content: string;
   timestamp: Date;
+}
+
+/** Parse markdown text and render tables as styled HTML tables */
+function RichContent({ content }: { content: string }) {
+  const lines = content.split("\n");
+  const elements: React.ReactNode[] = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    // Detect markdown table (lines starting with |)
+    if (lines[i].trim().startsWith("|") && i + 1 < lines.length && lines[i + 1].trim().match(/^\|[\s\-:|]+\|/)) {
+      const tableLines: string[] = [];
+      while (i < lines.length && lines[i].trim().startsWith("|")) {
+        tableLines.push(lines[i].trim());
+        i++;
+      }
+      elements.push(renderTable(tableLines, elements.length));
+      continue;
+    }
+
+    // Render non-table content with basic markdown formatting
+    const line = lines[i];
+    if (line.trim() === "") {
+      elements.push(<div key={elements.length} className="h-2" />);
+    } else if (line.trim().startsWith("### ")) {
+      elements.push(<h3 key={elements.length} className="text-base font-bold text-slate-800 mt-3 mb-1">{formatInlineMarkdown(line.replace(/^###\s+/, ""))}</h3>);
+    } else if (line.trim().startsWith("## ")) {
+      elements.push(<h2 key={elements.length} className="text-lg font-bold text-slate-900 mt-4 mb-2">{formatInlineMarkdown(line.replace(/^##\s+/, ""))}</h2>);
+    } else if (line.trim().startsWith("# ")) {
+      elements.push(<h1 key={elements.length} className="text-xl font-bold text-slate-900 mt-4 mb-2">{formatInlineMarkdown(line.replace(/^#\s+/, ""))}</h1>);
+    } else if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
+      elements.push(
+        <div key={elements.length} className="flex gap-2 ml-2">
+          <span className="text-emerald-500 mt-1">•</span>
+          <span>{formatInlineMarkdown(line.replace(/^\s*[-*]\s+/, ""))}</span>
+        </div>
+      );
+    } else if (line.trim().match(/^\d+\.\s/)) {
+      const num = line.trim().match(/^(\d+)\.\s/)?.[1];
+      elements.push(
+        <div key={elements.length} className="flex gap-2 ml-2">
+          <span className="text-emerald-600 font-semibold min-w-[1.2rem]">{num}.</span>
+          <span>{formatInlineMarkdown(line.replace(/^\s*\d+\.\s+/, ""))}</span>
+        </div>
+      );
+    } else {
+      elements.push(<p key={elements.length} className="leading-relaxed">{formatInlineMarkdown(line)}</p>);
+    }
+    i++;
+  }
+
+  return <div className="space-y-1">{elements}</div>;
+}
+
+function formatInlineMarkdown(text: string): React.ReactNode {
+  // Replace **bold** and *italic* and `code`
+  const parts: React.ReactNode[] = [];
+  let remaining = text;
+  let key = 0;
+
+  while (remaining.length > 0) {
+    // Bold
+    const boldMatch = remaining.match(/\*\*(.+?)\*\*/);
+    // Code
+    const codeMatch = remaining.match(/`(.+?)`/);
+
+    let firstMatch: { index: number; length: number; content: React.ReactNode } | null = null;
+
+    if (boldMatch && boldMatch.index !== undefined) {
+      const candidate = { index: boldMatch.index, length: boldMatch[0].length, content: <strong key={key++} className="font-semibold text-slate-900">{boldMatch[1]}</strong> };
+      if (!firstMatch || candidate.index < firstMatch.index) firstMatch = candidate;
+    }
+    if (codeMatch && codeMatch.index !== undefined) {
+      const candidate = { index: codeMatch.index, length: codeMatch[0].length, content: <code key={key++} className="bg-slate-100 text-emerald-700 px-1 py-0.5 rounded text-xs font-mono">{codeMatch[1]}</code> };
+      if (!firstMatch || candidate.index < firstMatch.index) firstMatch = candidate;
+    }
+
+    if (firstMatch) {
+      if (firstMatch.index > 0) {
+        parts.push(remaining.slice(0, firstMatch.index));
+      }
+      parts.push(firstMatch.content);
+      remaining = remaining.slice(firstMatch.index + firstMatch.length);
+    } else {
+      parts.push(remaining);
+      break;
+    }
+  }
+
+  return <>{parts}</>;
+}
+
+function renderTable(tableLines: string[], keyBase: number): React.ReactNode {
+  const parseRow = (line: string) =>
+    line.split("|").filter((_, i, arr) => i > 0 && i < arr.length - 1).map(cell => cell.trim());
+
+  const headers = parseRow(tableLines[0]);
+  // Skip separator line (index 1)
+  const rows = tableLines.slice(2).map(parseRow);
+
+  return (
+    <div key={keyBase} className="my-3 overflow-x-auto rounded-lg border border-slate-200 shadow-sm">
+      <table className="w-full text-sm">
+        <thead>
+          <tr className="bg-gradient-to-r from-emerald-50 to-blue-50">
+            {headers.map((h, i) => (
+              <th key={i} className="px-3 py-2.5 text-left font-semibold text-slate-700 border-b border-slate-200 whitespace-nowrap">
+                {formatInlineMarkdown(h)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, rIdx) => (
+            <tr key={rIdx} className={`${rIdx % 2 === 0 ? "bg-white" : "bg-slate-50/50"} hover:bg-emerald-50/30 transition-colors`}>
+              {row.map((cell, cIdx) => (
+                <td key={cIdx} className="px-3 py-2 text-slate-600 border-b border-slate-100 whitespace-nowrap">
+                  {formatInlineMarkdown(cell)}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
 
 export function AIAssistant() {
@@ -51,7 +176,6 @@ export function AIAssistant() {
     setIsLoading(true);
 
     try {
-      // Prepare context data
       const contextData = {
         medicines: medicines.map(m => ({ id: m.id, name: m.name, minStock: m.minStock })),
         batches: batches.map(b => ({ medicineId: b.medicineId, quantity: b.quantity, expiryDate: b.expiryDate })),
@@ -125,15 +249,13 @@ export function AIAssistant() {
                 className={`rounded-2xl px-4 py-3 text-sm shadow-sm ${
                   msg.role === "user"
                     ? "bg-blue-600 text-white rounded-tr-none"
-                    : "bg-white border border-slate-200 text-slate-800 rounded-tl-none prose prose-sm prose-emerald max-w-none"
+                    : "bg-white border border-slate-200 text-slate-800 rounded-tl-none max-w-none"
                 }`}
               >
                 {msg.role === "user" ? (
                   <p className="whitespace-pre-wrap">{msg.content}</p>
                 ) : (
-                  <div className="markdown-body">
-                    <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  </div>
+                  <RichContent content={msg.content} />
                 )}
               </div>
             </div>

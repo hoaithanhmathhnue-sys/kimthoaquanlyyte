@@ -1,11 +1,15 @@
 import { create } from 'zustand';
 import { User } from '../types';
-import { initialData } from '../data/mockData';
 
-const MOCK_CREDENTIALS: Record<string, string> = {
-  'admin@clinic.com': '123456',
-  'thukho@clinic.com': '123456',
-  'yta@clinic.com': '123456',
+const ADMIN_ACCOUNT = {
+  email: 'admin@clinic.com',
+  password: '123456',
+};
+
+const ADMIN_USER: User = {
+  id: 'u1',
+  name: 'Quản Trị Viên',
+  email: 'admin@clinic.com',
 };
 
 const AUTH_STORAGE_KEY = 'auth_user';
@@ -42,21 +46,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   },
 
   signIn: async (email: string, password: string) => {
-    const expectedPassword = MOCK_CREDENTIALS[email.toLowerCase()];
-    if (!expectedPassword || expectedPassword !== password) {
+    if (
+      email.toLowerCase() !== ADMIN_ACCOUNT.email ||
+      password !== ADMIN_ACCOUNT.password
+    ) {
       return { error: 'Email hoặc mật khẩu không đúng.' };
     }
 
-    const user = initialData.users.find(
-      (u) => u.email.toLowerCase() === email.toLowerCase()
-    );
-
-    if (!user) {
-      return { error: 'Không tìm thấy tài khoản.' };
-    }
-
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
-    set({ user, profile: user });
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(ADMIN_USER));
+    set({ user: ADMIN_USER, profile: ADMIN_USER });
     return {};
   },
 
