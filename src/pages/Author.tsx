@@ -17,7 +17,7 @@ export function Author() {
             <div className="w-32 h-32 rounded-full border-4 border-white shadow-xl overflow-hidden bg-white">
               <img
                 src="/avatar.PNG"
-                alt="BS. Dương Minh Trí"
+                alt="Tác giả: Dương Minh Trí"
                 className="w-full h-full object-cover"
               />
             </div>
@@ -26,7 +26,7 @@ export function Author() {
 
         <CardContent className="pt-20 pb-8 text-center">
           <h2 className="text-2xl font-bold text-slate-900 mb-1">BS. Dương Minh Trí</h2>
-          <p className="text-emerald-600 font-medium text-sm mb-6">Bác sĩ — Nhà phát triển ứng dụng</p>
+          <p className="text-emerald-600 font-medium text-sm mb-6">Sinh viên — Nhà phát triển ứng dụng</p>
 
           <div className="max-w-lg mx-auto space-y-4">
             <div className="flex items-center gap-4 p-4 rounded-xl bg-slate-50 border border-slate-100">
@@ -34,8 +34,8 @@ export function Author() {
                 <Stethoscope className="h-5 w-5 text-emerald-600" />
               </div>
               <div className="text-left">
-                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Chức danh</p>
-                <p className="text-sm font-semibold text-slate-800">Bác sĩ</p>
+                <p className="text-xs text-slate-500 font-medium uppercase tracking-wider">Thông tin về tác giả</p>
+                <p className="text-sm font-semibold text-slate-800">Sinh viên ngành y</p>
               </div>
             </div>
 
