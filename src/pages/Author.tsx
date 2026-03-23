@@ -25,7 +25,7 @@ export function Author() {
         </div>
 
         <CardContent className="pt-20 pb-8 text-center">
-          <h2 className="text-2xl font-bold text-slate-900 mb-1">BS. Dương Minh Trí</h2>
+          <h2 className="text-2xl font-bold text-slate-900 mb-1">Tác giả: Dương Minh Trí</h2>
           <p className="text-emerald-600 font-medium text-sm mb-6">Sinh viên — Nhà phát triển ứng dụng</p>
 
           <div className="max-w-lg mx-auto space-y-4">
@@ -65,7 +65,7 @@ export function Author() {
               Ứng dụng MediCare Pro — Quản lý vật tư y tế thông minh
             </p>
             <p className="text-xs text-slate-400 mt-1">
-              Phát triển bởi BS. Dương Minh Trí © {new Date().getFullYear()}
+              Phát triển bởi tác giả Dương Minh Trí © {new Date().getFullYear()}
             </p>
           </div>
         </CardContent>
